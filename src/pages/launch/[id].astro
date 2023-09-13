@@ -1,0 +1,25 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import H1 from '../../components/H1.astro';
+
+import { getLaunchByID } from '../../services/spaceX.js';
+const { id } = Astro.params;
+let launch;
+
+if (!id) {
+    Astro.redirect('/404');
+    return;
+} else {
+    launch = await getLaunchByID(id);
+}
+
+export const prerender = false;
+---
+
+<Layout title={`Space X Launch N°${launch?.id} ${launch?.name}`}>
+    <picture class="text-center block w-full">
+        <img class="mx-auto" src={launch?.links?.patch.small} alt={launch?.name}>
+    </picture>
+    <H1>Launch #{launch?.flight_number}</H1>
+    <p class="text-lg dark:text-white">{launch?.details}</p>
+</Layout>
